@@ -23,7 +23,8 @@
         "symfony/runtime": "7.1.*",
         "symfony/serializer": "7.1.*",
         "symfony/validator": "7.1.*",
-        "symfony/yaml": "7.1.*"
+        "symfony/yaml": "7.1.*",
+        "zenstruck/foundry": "^2.0"
     },
     "config": {
         "allow-plugins": {
@@ -83,7 +84,6 @@
         "symfony/css-selector": "7.1.*",
         "symfony/maker-bundle": "^1.60",
         "symfony/phpunit-bridge": "^7.1",
-        "zenstruck/browser": "^1.8",
-        "zenstruck/foundry": "^2.0"
+        "zenstruck/browser": "^1.8"
     }
 }

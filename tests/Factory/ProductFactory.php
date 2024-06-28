@@ -7,10 +7,10 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Persistence\Proxy;
 
 /**
- * @extends PersistentProxyObjectFactory<Product>
- * @method static Product[]|Proxy[] createMany(int $number, array|callable $attributes = [])
  *
+ * @method static Product[]|Proxy[] createMany(int $number, array|callable $attributes = [])
  * @phpstan-method static list<Proxy<Product>&Product> createMany(int $number, array|callable $attributes = [])
+ * @extends PersistentProxyObjectFactory<Product>
  */
 final class ProductFactory extends PersistentProxyObjectFactory
 {
@@ -37,8 +37,9 @@ final class ProductFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'name' => self::faker()->text(255),
-            'price' => self::faker()->randomNumber(),
+            'name' => self::faker()->word(),
+            'price' => self::faker()->numberBetween(100, 1000),
+            'description' => self::faker()->sentence(),
         ];
     }
 

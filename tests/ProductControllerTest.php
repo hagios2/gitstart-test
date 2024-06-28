@@ -2,23 +2,15 @@
 
 namespace App\Tests;
 
-use App\Entity\Product;
 use App\Tests\Factory\ProductFactory;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ProductControllerTest extends WebTestCase
 {
-//    use HasBrowser;
     use Factories;
-//    use ResetDatabase;
-
-
 
     public function setUp(): void
     {
@@ -118,16 +110,127 @@ class ProductControllerTest extends WebTestCase
         }
     }
 
-    public function testFetchProducts()
+    public function testFetchProducts(): void
     {
-        $product = ProductFactory::createMany(5);
-//        dd($product);
         $client = $this->createAuthenticatedClient();
+
+        ProductFactory::createMany(5);
+
         $client->request('GET', '/api/products');
 
         $this->assertResponseIsSuccessful();
+        $actualResponse =  json_decode($client->getResponse()->getContent(), true);
 
-       $this->assertJson();
+        $this->assertArrayHasKey('data', $actualResponse);
+        $this->assertArrayHasKey('message', $actualResponse);
+        $this->assertEquals('Fetched products successfully', $actualResponse['message']);
+        $this->assertNotEmpty($actualResponse['data']);
+
+        foreach ($actualResponse['data'] as $product) {
+            $this->assertArrayHasKey('id', $product);
+            $this->assertArrayHasKey('name', $product);
+            $this->assertArrayHasKey('price', $product);
+            $this->assertArrayHasKey('description', $product);
+        }
+    }
+
+    public function testFetchAProduct(): void
+    {
+        $client = $this->createAuthenticatedClient();
+
+        $product = ProductFactory::createMany(2);
+        $client->request('GET', "/api/products/{$product[0]->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $actualResponse =  json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertArrayHasKey('data', $actualResponse);
+        $this->assertArrayHasKey('message', $actualResponse);
+        $this->assertEquals('Fetched product successfully', $actualResponse['message']);
+        $this->assertNotEmpty($actualResponse['data']);
+
+        $this->assertArrayHasKey('id', $actualResponse['data']);
+        $this->assertArrayHasKey('name', $actualResponse['data']);
+        $this->assertArrayHasKey('price', $actualResponse['data']);
+        $this->assertArrayHasKey('description', $actualResponse['data']);
+    }
+
+    public function testUpdateAProduct(): void
+    {
+        $client = $this->createAuthenticatedClient();
+
+        $input = [
+            'name' => 'Test',
+            'price' => 4000,
+            'description' => 'This is a test',
+        ];
+
+        $product = ProductFactory::createMany(2);
+        $oldValue = [
+            'id' => $product[0]->getId(),
+            'name' => $product[0]->getName(),
+            'price' => $product[0]->getPrice(),
+            'description' => $product[0]->getDescription()
+        ];
+
+        $client->request(
+            'PUT',
+            "/api/products/{$product[0]->getId()}",
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json'],
+             json_encode($input)
+        );
+
+        $this->assertResponseIsSuccessful();
+        $actualResponse = json_decode($client->getResponse()->getContent(), true);;
+
+        $this->assertArrayHasKey('data', $actualResponse);
+        $this->assertArrayHasKey('message', $actualResponse);
+        $this->assertEquals('Product updated successfully', $actualResponse['message']);
+        $this->assertNotEmpty($actualResponse['data']);
+
+        $this->assertEquals($oldValue['id'], $actualResponse['data']['id']);
+
+        //assert values are no longer as before
+        $this->assertNotEquals($oldValue['name'], $actualResponse['data']['name']);
+        $this->assertNotEquals($oldValue['price'], $actualResponse['data']['price']);
+        $this->assertNotEquals($oldValue['description'], $actualResponse['data']['description']);
+
+        //assert new values have been set
+        $this->assertEquals($input['name'], $actualResponse['data']['name']);
+        $this->assertEquals($input['price'], $actualResponse['data']['price']);
+        $this->assertEquals($input['description'], $actualResponse['data']['description']);
+    }
+
+    public function testDeleteAProduct(): void
+    {
+        $client = $this->createAuthenticatedClient();
+
+        $product = ProductFactory::createMany(2);
+        $id = $product[0]->getId();
+
+        $client->request(
+            'DELETE',
+            "/api/products/{$id}"
+        );
+
+        $this->assertResponseIsSuccessful();
+        $actualResponse = json_decode($client->getResponse()->getContent(), true);;
+
+        $this->assertArrayNotHasKey('data', $actualResponse);
+        $this->assertArrayHasKey('message', $actualResponse);
+        $this->assertEquals('Product updated successfully', $actualResponse['message']);
+
+        //re-fetch product to ensure it doesn't exist
+        $client->request(
+            'GET',
+            "/api/products/{$id}"
+        );
+
+        $actualResponse = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Route/Entity not found', $actualResponse['message']);
+        $this->assertEquals(404, $actualResponse['status']);
     }
 
     public function getFieldAndValidationMessage(): array
