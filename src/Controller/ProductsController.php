@@ -23,11 +23,15 @@ class ProductsController extends AbstractController
     #[Route('/api/products', name: 'api_create_products', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        $payload = $request->toArray();
-        $dto = new ProductDto($this->validator);
-        $dto->name = $payload['name'];
-        $dto->price = $payload['price'];
-        $dto->description = $payload['description'];
+        $payload = $request->getPayload();
+        $dto = new ProductDto($request, $this->validator);
+        $dto->name = $payload->get('name') ?? null;
+        $dto->price = $payload->get('price') ?? null;
+        $dto->description = $payload->get('description');
+
+        if ($dto->errorsCount) {
+            return $dto->sendResponse();
+        }
 
         return $this->json([
             'message' => 'Product created successfully',
@@ -56,11 +60,15 @@ class ProductsController extends AbstractController
     #[Route('/api/products/{id}', name: 'api_update_a_product', methods: ['PUT'])]
     public function updateProduct(Product $product, Request $request): JsonResponse
     {
-        $payload = $request->toArray();
-        $dto = new ProductDto($this->validator);
-        $dto->name = $payload['name'];
-        $dto->price = $payload['price'];
-        $dto->description = $payload['description'];
+        $payload = $request->getPayload();
+        $dto = new ProductDto($request, $this->validator);
+        $dto->name = $payload->get('name') ?? null;
+        $dto->price = $payload->get('price') ?? null;
+        $dto->description = $payload->get('description');
+
+        if ($dto->errorsCount) {
+            return $dto->sendResponse();
+        }
 
         return $this->json([
             'message' => 'Product updated successfully',

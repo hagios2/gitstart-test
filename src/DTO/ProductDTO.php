@@ -12,16 +12,11 @@ class ProductDTO extends BaseRequest
         max: 255,
         maxMessage: "Name cannot contain more than 255 characters"
     )]
-    public string $name;
+
+    public ?string $name;
 
     #[Assert\NotBlank(message: 'Price field is required')]
-    public int $price;
+    public ?int $price = null;
 
     public ?string $description = null;
-//    public ?string $image = null;
-
-    protected function autoValidateRequest(): bool
-    {
-        return true;
-    }
 }

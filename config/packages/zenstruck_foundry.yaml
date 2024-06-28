@@ -1,0 +1,7 @@
+
+when@test:
+    zenstruck_foundry:
+        # Whether to auto-refresh proxies by default (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#auto-refresh)
+        make_factory:
+            default_namespace: 'App\\Tests\\Factory'
+        auto_refresh_proxies: true
