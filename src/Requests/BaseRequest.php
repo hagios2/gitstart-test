@@ -6,12 +6,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class BaseRequest
 {
     public int $errorsCount;
-    public array $errorMessage;
+    public mixed $errorMessage;
 
     public function __construct(protected Request $request, protected ValidatorInterface $validator)
     {
@@ -21,10 +22,11 @@ abstract class BaseRequest
 
     public function validate(): void
     {
+        /** @var ConstraintViolationList $errors */
         $errors = $this->validator->validate($this);
         $messages = ['message' => 'Validation failed', 'errors' => []];
 
-        /** @var ConstraintViolation $errors */
+        /** @var ConstraintViolation $message */
         foreach ($errors as $message) {
             $messages['errors'][] = [
                 'property' => $message->getPropertyPath(),

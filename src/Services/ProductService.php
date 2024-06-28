@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\ProductDTO;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use ArrayIterator;
 
 class ProductService
 {
@@ -24,12 +25,14 @@ class ProductService
 
         return $product;
     }
+
+    /** @return array<int, Product> */
     public function getProducts(): array
     {
         return $this->productRepository->findAll();
     }
 
-    public function updateProduct($productId, ProductDTO $DTO): Product
+    public function updateProduct(int $productId, ProductDTO $DTO): Product
     {
         $product = $this->productRepository->find($productId);
 

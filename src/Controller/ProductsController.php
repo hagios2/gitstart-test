@@ -82,7 +82,7 @@ class ProductsController extends AbstractController
         $this->productService->deleteProduct($product);
 
         return $this->json([
-            'message' => 'Product updated successfully',
+            'message' => 'Product deleted successfully',
         ]);
     }
 }

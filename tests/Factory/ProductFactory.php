@@ -8,8 +8,6 @@ use Zenstruck\Foundry\Persistence\Proxy;
 
 /**
  *
- * @method static Product[]|Proxy[] createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<Product>&Product> createMany(int $number, array|callable $attributes = [])
  * @extends PersistentProxyObjectFactory<Product>
  */
 final class ProductFactory extends PersistentProxyObjectFactory
