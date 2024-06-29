@@ -18,9 +18,14 @@ migrate:
 seed:
 	bin/console doctrine:fixtures:load
 
-seed_test:
-	bin/console doctrine:fixtures:load --env=test
+seed_test_db:
+	bin/console --env=test doctrine:fixtures:load
 
 create_test_db:
-	bin/console doctrine:database:create
+	bin/console --env=test doctrine:database:create
 
+migrate_test_db:
+	bin/console --env=test doctrine:migrations:migrate
+
+jwt_token:
+	bin/console	lexik:jwt:generate-keypair --overwrite
