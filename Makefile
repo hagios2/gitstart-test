@@ -7,7 +7,7 @@ bash:
 	docker exec -it php bash
 
 build:
-	docker-compose up --build -d
+	docker-compose up --build
 
 create_db:
 	bin/console doctrine:database:create
