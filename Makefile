@@ -7,7 +7,7 @@ bash:
 	docker exec -it php bash
 
 build:
-	docker-compose up --build
+	docker-compose up --build -d
 
 create_db:
 	bin/console doctrine:database:create
@@ -29,3 +29,6 @@ migrate_test_db:
 
 jwt_token:
 	bin/console	lexik:jwt:generate-keypair --overwrite
+
+down:
+	docker-compose down
