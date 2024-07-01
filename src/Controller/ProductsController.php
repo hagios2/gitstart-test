@@ -16,8 +16,7 @@ class ProductsController extends AbstractController
     public function __construct(
         protected ProductService $productService,
         protected ValidatorInterface $validator
-    )
-    {
+    ) {
     }
 
     #[Route('/api/products', name: 'api_create_products', methods: ['POST'])]

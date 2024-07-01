@@ -11,7 +11,6 @@ class ProductService
 {
     public function __construct(protected ProductRepository $productRepository)
     {
-
     }
 
     public function create(ProductDTO $DTO): Product

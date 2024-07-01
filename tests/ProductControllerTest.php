@@ -177,7 +177,8 @@ class ProductControllerTest extends WebTestCase
         );
 
         $this->assertResponseIsSuccessful();
-        $actualResponse = json_decode($client->getResponse()->getContent(), true);;
+        $actualResponse = json_decode($client->getResponse()->getContent(), true);
+        ;
 
         $this->assertArrayHasKey('data', $actualResponse);
         $this->assertArrayHasKey('message', $actualResponse);
@@ -210,7 +211,8 @@ class ProductControllerTest extends WebTestCase
         );
 
         $this->assertResponseIsSuccessful();
-        $actualResponse = json_decode($client->getResponse()->getContent(), true);;
+        $actualResponse = json_decode($client->getResponse()->getContent(), true);
+        ;
 
         $this->assertArrayNotHasKey('data', $actualResponse);
         $this->assertArrayHasKey('message', $actualResponse);
